@@ -129,14 +129,14 @@ def main():
                     print(f"  ? '{domain}' - Error occurred")
 
         # Summary Table
-        print(f"\n\n{'='*70}")
+        print(f"\n\n{'='*85}")
         print("SUMMARY TABLE")
-        print(f"{'='*70}")
+        print(f"{'='*85}")
 
         # Table header
-        header = f"{'Domain Name':<20} | {'.com':<10} | {'.ch':<10} | {'.org':<10}"
+        header = f"{'Domain Name':<20} | {'.com':<10} | {'.ch':<10} | {'.org':<10} | {'All Avail':<10}"
         print(header)
-        print("-" * 70)
+        print("-" * 85)
 
         for base_name in base_names:
             if '.' in base_name:
@@ -145,11 +145,12 @@ def main():
             com_status = format_status(results[base_name].get('com'))
             ch_status = format_status(results[base_name].get('ch'))
             org_status = format_status(results[base_name].get('org'))
+            all_available = check_all_available(results[base_name])
 
-            row = f"{base_name:<20} | {com_status:<10} | {ch_status:<10} | {org_status:<10}"
+            row = f"{base_name:<20} | {com_status:<10} | {ch_status:<10} | {org_status:<10} | {all_available:<10}"
             print(row)
 
-        print("=" * 70)
+        print("=" * 85)
         print("\nLegend: ✓ = Available  |  ✗ = Taken  |  ? = Error")
 
     except FileNotFoundError:
@@ -168,6 +169,14 @@ def format_status(status):
         return "✗ TAKEN"
     else:
         return "? ERROR"
+
+def check_all_available(domain_results):
+    """Check if all TLDs are available for a domain."""
+    all_available = all(status is True for status in domain_results.values())
+    if all_available:
+        return "✓ YES"
+    else:
+        return "✗ NO"
 
 if __name__ == "__main__":
     main()
