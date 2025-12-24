@@ -82,7 +82,16 @@ def query_whois_server(server, domain):
 def main():
     try:
         with open('domains.txt', 'r') as f:
-            base_names = [line.strip() for line in f if line.strip()]
+            base_names = []
+            for line in f:
+                line = line.strip()
+                # Skip empty lines, comments, and non-domain content
+                if (line and 
+                    not line.startswith('#') and  # Skip comments starting with #
+                    not line.startswith('=') and  # Skip separator lines with =
+                    not line.startswith('-')  # Skip separator lines with -
+                    ):
+                        base_names.append(line)
 
         # TLDs to check
         tlds = ['.com', '.ch', '.org']
